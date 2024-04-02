@@ -87,7 +87,7 @@ export const Camera = ({ className }: Props) => {
   return (
     <div className={blockClassName}>
       <div className="camera__column">
-        <video>
+        <video ref={videoEl}>
           <track kind="captions" />
         </video>
         <button type="button" onClick={onGetUserMediaButtonClick}>open camera preview</button>
