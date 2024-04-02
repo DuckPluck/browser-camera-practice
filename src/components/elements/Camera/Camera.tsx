@@ -25,8 +25,8 @@ export const Camera = ({ className }: Props) => {
     navigator.mediaDevices.getUserMedia({ video: true })
       .then((mediaStream) => {
         if (videoEl.current) {
-          console.log(2, videoEl.current);
           videoEl.current.srcObject = mediaStream;
+          console.log(2, videoEl.current.srcObject);
         }
 
         const track = mediaStream.getVideoTracks()[0];
@@ -84,7 +84,7 @@ export const Camera = ({ className }: Props) => {
         }
       });
     }
-  }, [videoEl.current]);
+  }, []);
 
   return (
     <div className={blockClassName}>
