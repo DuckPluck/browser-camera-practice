@@ -85,6 +85,12 @@ export const Camera = ({ className }: Props) => {
   return (
     <div className={blockClassName}>
       <div className="camera__column">
+        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+        <video ref={videoEl} className="camera__preview" />
+        <button type="button" onClick={onGetUserMediaButtonClick}>open camera preview</button>
+      </div>
+
+      <div className="camera__column">
         <canvas ref={takePhotoCanvas} className="camera__preview" />
         <button type="button" disabled={isButtonsBlocked} onClick={onTakePhotoButtonClick} ref={takePhotoButton}>take a photo</button>
       </div>
@@ -92,12 +98,6 @@ export const Camera = ({ className }: Props) => {
       <div className="camera__column">
         <canvas ref={grabFrameCanvas} className="camera__preview"/>
         <button type="button" disabled={isButtonsBlocked} onClick={onGrabFrameButtonClick} ref={grabFrameButton}>grab a frame</button>
-      </div>
-
-      <div className="camera__column">
-        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-        <video ref={videoEl} className="camera__preview" />
-        <button type="button" onClick={onGetUserMediaButtonClick}>open camera preview</button>
       </div>
     </div>
   );
