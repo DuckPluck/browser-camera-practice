@@ -13,8 +13,7 @@ export const Camera = ({ className }: Props) => {
   const blockClassName = classNames('camera', className);
 
   const [isButtonsBlocked, setIsButtonsBlocked] = useState(true);
-
-  let imageCapture: any;
+  const [imageCapture, setImageCapture] = useState<ImageCapture>(null!);
 
   const videoEl = useRef<HTMLVideoElement>(null);
   const grabFrameButton = useRef<HTMLButtonElement>(null);
@@ -39,7 +38,7 @@ export const Camera = ({ className }: Props) => {
         }
 
         const track = mediaStream.getVideoTracks()[0];
-        imageCapture = new ImageCapture(track);
+        setImageCapture(new ImageCapture(track));
       })
       .catch((error: any) => console.error(error));
   }
