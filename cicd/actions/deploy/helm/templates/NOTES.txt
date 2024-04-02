@@ -1,0 +1,4 @@
+Deploy values:
+{{- range $key, $value := .Values.deploy }}
+  {{ $key }}: {{ $value | required ".Values.deploy is not defined" }}
+{{- end }}

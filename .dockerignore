@@ -1,0 +1,18 @@
+.git
+.gitignore
+.gitlab-ci.yml
+.ci-hooks
+.editorconfig
+.styleci.yml
+.dockerignore
+# .env - do not touch that
+/.env.*
+Dockerfile
+docker-compose.yml
+docker-compose-*
+docker-compose.*
+README.md
+/helm
+/docker
+/devtools
+/cicd

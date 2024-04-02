@@ -1,0 +1,22 @@
+deploy:
+  image: docker-registry.tesonero.com/cr-base-images/cicd-tools/k8s:1.24.11
+  resource_group: $CI_PROJECT_PATH_SLUG
+  stage: deploy
+  before_script:
+    - cd cicd/actions/deploy
+  script:
+    - bash helm/pre-deploy-env.sh
+    - envsubst < helm/pipeline-values.subst.yaml | sponge helm/pipeline-values.subst.yaml
+    - helm lint -f ${HELM_VALUES} -f helm/pipeline-values.subst.yaml helm/
+    - helm upgrade --install --atomic --namespace=${HELM_NAMESPACE:?} -f ${HELM_VALUES} -f helm/pipeline-values.subst.yaml ${APP_NAME} helm/
+    - kubectl get -n ${HELM_NAMESPACE:?} deployments.apps,ingress,service --selector app.kubernetes.io/name=${APP_NAME}
+uninstall:
+  image: docker-registry.tesonero.com/cr-base-images/cicd-tools/k8s:1.24.11
+  resource_group: $CI_PROJECT_PATH_SLUG
+  stage: uninstall
+  script:
+    - helm uninstall --namespace=${HELM_NAMESPACE:?} ${APP_NAME}
+  rules:
+    - if: $DELETE_ALLOWED != "yes"
+      when: never
+    - when: manual

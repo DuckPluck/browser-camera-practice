@@ -1,0 +1,6 @@
+# The deploy values are managed via CI/CD
+deploy:
+  env: ${DEPLOY_ENV}
+  version: ${IMAGE_VERSION_TAG}
+  ingress: ${DEPLOY_INGRESS_DOMAIN}
+  repo: ${IMAGE_REGISTRY_URL}

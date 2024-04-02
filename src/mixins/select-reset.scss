@@ -1,0 +1,38 @@
+@mixin select-reset {
+  display: inline-block;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0 28px 0 0;
+
+  font-weight: normal;
+  line-height: normal;
+  font-family: inherit;
+  vertical-align: middle;
+  color: inherit;
+
+  background-color: transparent;
+  background-image: url(./img/select-expand.svg);
+  background-repeat: no-repeat, repeat;
+  background-position: right 10px top 50%;
+  background-size: 9px 5px;
+  border: 0;
+  cursor: pointer;
+
+  appearance: none;
+
+  &::-ms-expand {
+    display: none;
+  }
+
+  option {
+    line-height: normal;
+    color: var(--color-text);
+
+    background-color: var(--color-background);
+  }
+
+  option:disabled {
+    color: var(--color-border);
+  }
+}

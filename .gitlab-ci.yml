@@ -1,0 +1,61 @@
+default:
+  tags:
+    - run-dind
+    - v-ci-run-web-1-rhea-tsn-infra
+stages:
+  - build
+  - deploy
+  - uninstall
+variables:
+  APP_NAME: $CI_PROJECT_PATH_SLUG
+  SOURCE_IMAGE: docker-registry.tesonero.com/cr-base-images/node-pm2:node-v18-stable
+  CI_ENABLED: "no"
+workflow:
+  rules:
+    - if: $CI_ENABLED != "yes"
+      when: never
+    - if: $CI_PIPELINE_SOURCE != "push"
+      when: never
+    - if: $CI_COMMIT_REF_NAME == "dev"
+      variables:
+        DEPLOY_ENV: dev
+        DELETE_ALLOWED: "yes"
+        DEPLOY_INGRESS_DOMAIN: $CI_PROJECT_PATH_SLUG.$K8S_DEV_BASE_INGRESS
+        REGISTRY_AUTH_URL: $CI_REGISTRY
+        REGISTRY_AUTH_USER: $CI_REGISTRY_USER
+        REGISTRY_AUTH_PASSWORD: $CI_REGISTRY_PASSWORD
+        IMAGE_REGISTRY_URL: $CI_REGISTRY_IMAGE
+        IMAGE_VERSION_TAG: $CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+        KUBECONFIG: $K8S_DEV_KUBECONFIG
+        HELM_NAMESPACE: $K8S_DEV_NAMESPACE
+        HELM_VALUES: helm/values.dev.yaml
+    - if: $CI_COMMIT_REF_NAME == "stage"
+      variables:
+        DEPLOY_ENV: stage
+        DELETE_ALLOWED: "yes"
+        DEPLOY_INGRESS_DOMAIN: $CI_PROJECT_PATH_SLUG.$K8S_STAGE_BASE_INGRESS
+        REGISTRY_AUTH_URL: $CI_REGISTRY
+        REGISTRY_AUTH_USER: $CI_REGISTRY_USER
+        REGISTRY_AUTH_PASSWORD: $CI_REGISTRY_PASSWORD
+        IMAGE_REGISTRY_URL: $CI_REGISTRY_IMAGE
+        IMAGE_VERSION_TAG: $CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+        KUBECONFIG: $K8S_DEV_KUBECONFIG
+        HELM_NAMESPACE: $K8S_STAGE_NAMESPACE
+        HELM_VALUES: helm/values.stage.yaml
+include:
+  - local: 'cicd/piplines/build/docker/*.yaml'
+  - local: 'cicd/piplines/deploy/helm/*.yaml'
+    rules:
+    - if: $CI_COMMIT_REF_NAME == "dev"
+  - local: 'cicd/piplines/deploy/helm/*.yaml'
+    rules:
+    - if: $CI_COMMIT_REF_NAME == "stage"
+  # Kubernetes prod workflow:
+  #- local: 'cicd/piplines/deploy/helm/*.yaml'
+  #  rules:
+  #  - if: $CI_COMMIT_TAG =~ /^v\d+(?:\.\d+){2}(?:-\w+)?$/
+  #
+  # Docker compose prod workflow:
+  #- local: 'cicd/piplines/deploy/ansible/*.yaml'
+  #  rules:
+  #  - if: $CI_COMMIT_TAG =~ /^v\d+(?:\.\d+){2}(?:-\w+)?$/

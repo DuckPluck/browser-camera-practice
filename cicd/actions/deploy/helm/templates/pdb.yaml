@@ -1,0 +1,12 @@
+{{- $fullName := include "helm.fullname" . -}}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
+spec:
+  minAvailable: {{ .Values.replication.pdbMinAvailable }}
+  selector:
+    matchLabels:
+        {{- include "helm.selectorLabels" . | nindent 8 }}

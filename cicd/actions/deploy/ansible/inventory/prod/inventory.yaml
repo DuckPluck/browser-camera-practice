@@ -1,0 +1,20 @@
+target:
+  vars:
+    service_base_path: /var/www/ws !required
+    service_version_path: /var/www/ws/versions !required
+    service_compose_current: docker-compose.yaml
+    service_compose_rollback: docker-compose.rollback.yaml
+    service_name: !required
+    service_worker_name: !required
+    service_healthcheck_interval_seconds: 5
+    service_healthcheck_timeout_seconds: 3
+    service_healthcheck_retry: 3
+    service_deploy_timeout_seconds: 30
+    docker_registry_url: https://cr-public.tesonero.cloud
+    docker_registry_user: !required
+    ansible_ssh_private_key_file: keys/deployer_ssh_key
+    docker_registry_password: !required !vault
+  hosts:
+    #target-host
+    #  ansible_host: IP
+    #  ansible_user: root

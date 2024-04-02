@@ -1,0 +1,8 @@
+$limiter-width: 1920px;
+$limiter-breakpoint: $limiter-width + .1;
+
+@mixin limiter {
+  @media screen and (min-width: $limiter-breakpoint) {
+    @content;
+  }
+}

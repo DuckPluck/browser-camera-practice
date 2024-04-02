@@ -1,0 +1,15 @@
+@import 'src/mixins/for-size';
+
+.container {
+  max-width: $container-width;
+  margin: 0 auto;
+  padding: 0 72px;
+
+  @include for-size(tablet) {
+    padding: 0 36px;
+  }
+
+  @include for-size(mobile) {
+    padding: 0 16px;
+  }
+}

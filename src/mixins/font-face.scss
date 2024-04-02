@@ -1,0 +1,28 @@
+@import 'str-replace';
+
+@mixin font-face($name, $path, $weight: null, $style: null, $ext-list: eot woff2 woff ttf svg) {
+  $ext-mods: (
+  eot: '?',
+  svg: '#' + str-replace($name, ' ', '_'),
+  );
+  $formats: (
+  otf: 'opentype',
+  ttf: 'truetype',
+  );
+  $src: null;
+
+  @each $ext in $ext-list {
+    $ext-mod: if(map-has-key($ext-mods, $ext), $ext + map-get($ext-mods, $ext), $ext);
+    $format: if(map-has-key($formats, $ext), map-get($formats, $ext), $ext);
+    $src: append($src, url(quote($path + '.' + $ext-mod)) format(quote($format)), comma);
+  }
+
+  @font-face {
+    font-weight: $weight;
+    font-family: quote($name);
+    font-style: $style;
+
+    font-display: swap;
+    src: $src;
+  }
+}

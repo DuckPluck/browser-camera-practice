@@ -1,0 +1,14 @@
+deploy:
+  image: docker-registry.tesonero.com/cr-base-images/cicd-tools/ansible-docker-tools:9
+  stage: deploy
+  variables:
+    ANSIBLE_HOST_KEY_CHECKING: "False"
+  before_script:
+  - cd cicd/actions/deploy/ansible
+  script:
+  - ansible-vault decrypt keys/deployer_ssh_key
+  - ansible-playbook playbook.yaml -i inventory/$DEPLOY_ENV/inventory.yaml
+      -e x_ci_commit_uid=$IMAGE_VERSION_TAG
+      -e app_version=$IMAGE_VERSION_TAG
+      -e docker_image=$IMAGE_REGISTRY_URL:$IMAGE_VERSION_TAG
+      -e deploy_ingress_domain=$DEPLOY_INGRESS_DOMAIN

@@ -1,0 +1,342 @@
+@import 'src/mixins/for-size';
+@import 'src/mixins/hover-supported';
+
+@import-normalize;
+
+@import 'swiper/css';
+
+@import 'swiper/css/navigation';
+@import 'swiper/css/pagination';
+
+
+//noinspection CssUnknownProperty
+:root {
+  color-scheme: light;
+
+  --color-background: #fff;
+  --color-primary: #00f;
+  --color-text: #000;
+}
+
+b,
+strong {
+  font-weight: 500;
+}
+
+code,
+pre {
+  font-size: .96em;
+  font-family: SFMono-Regular, Menlo, Consolas, Inconsolata, monospace;
+}
+
+abbr[title] {
+  text-decoration: none;
+}
+
+abbr[title]:hover {
+  @include hover-supported {
+    text-decoration: underline dotted;
+  }
+}
+
+.page {
+  min-width: 280px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+
+  cursor: default;
+}
+
+.page__body {
+  margin: 0;
+
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5;
+  font-family: /* 'Comic Sans', */ Helvetica, -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  font-size-adjust: none;
+
+  font-kerning: normal;
+  font-variant-ligatures: contextual common-ligatures;
+  @include for-size(phablet) {
+    font-size: 16px;
+  }
+}
+
+.page,
+.page .page__body {
+  color: var(--color-text);
+
+  background: var(--color-background);
+}
+
+.page_theme_gray,
+.page_theme_gray .page__body {
+  background: var(--color-gray);
+}
+
+.page * {
+  box-sizing: border-box;
+}
+
+.page *:focus {
+  outline: 3px solid rgba(#000000, .34);
+  outline-offset: 2px;
+}
+
+:focus:not(.focus-visible).js-focus-visible, .js-focus-visible :focus:not(.focus-visible) {
+  outline: none;
+}
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.page_grabbing * {
+  cursor: grabbing !important;
+}
+
+.page a,
+.page button,
+.page label {
+  // Turning off double-tap zoom eliminates the need for browsers
+  // to delay generating click events when a user taps the screen
+  touch-action: manipulation;
+}
+
+.no-frame-slider {
+  overflow: hidden;
+}
+
+.no-frame-slider__swiper-container {
+  overflow: visible;
+}
+
+.swiper-wrapper,
+.swiper-slide {
+  backface-visibility: hidden;
+}
+
+.swiper-wrapper {
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.swiper-slide {
+  height: auto;
+}
+
+.swiper-button {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0;
+  padding: 0;
+
+  font-size: 0;
+  text-decoration: none;
+
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+
+  appearance: none;
+}
+
+.swiper-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 38px;
+  height: 38px;
+  margin: 3px;
+
+  background-color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .15);
+
+  -webkit-tap-highlight-color: transparent;
+
+  transition: box-shadow .1s ease-in-out, opacity .3s ease-in-out;
+}
+
+.swiper-button:hover::before {
+  @include hover-supported {
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, .25);
+  }
+}
+
+.swiper-button:active::before {
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, .1);
+}
+
+.swiper-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none"%3E%3Cpath d="M22 16l-8.3 8-1.03-1 4-6 .7-1-.7-1-4-6 1.03-1 8.3 8z" fill="%23222"/%3E%3C/svg%3E') no-repeat center;
+
+  transition: opacity .3s ease;
+}
+
+.swiper-button_arrow_prev {
+  left: -22px;
+}
+
+.swiper-button_arrow_prev::after {
+  transform: rotate(180deg);
+}
+
+.swiper-button_arrow_next {
+  right: -22px;
+}
+
+.swiper-button_disabled {
+  cursor: default;
+}
+
+.swiper-button_disabled::after {
+  opacity: .34;
+}
+
+.swiper-button_disabled::before {
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .15) !important;
+}
+
+.swiper-button_lock {
+  @extend .swiper-button_disabled;
+}
+
+.swiper-button_hidden {
+  @extend .swiper-button_disabled;
+}
+
+.swiper-button_hidden::before {
+  opacity: 0;
+}
+
+.swiper-button_hidden::after {
+  opacity: 0;
+}
+
+.swiper-pagination {
+  position: relative;
+
+  margin: (10px - 4px) -4px 0; // 4px is the margin of the bullets
+
+  line-height: 16px;
+  text-align: left;
+  white-space: nowrap;
+
+  @include for-size(mobile) {
+    margin-top: (25px - 4px);
+  }
+}
+
+.swiper-bullet {
+  position: relative;
+
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  padding: 0;
+
+  font-size: 0;
+  line-height: 16px;
+  vertical-align: top;
+  text-align: center;
+
+  background: transparent;
+  border: 0;
+  cursor: default;
+
+  -webkit-tap-highlight-color: transparent;
+
+  appearance: none;
+}
+
+.swiper-bullet::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 8px;
+  height: 8px;
+  margin: 4px;
+
+  background: var(--color-text);
+  border-radius: 50%;
+
+  transition: background-color .3s ease;
+}
+
+.swiper-bullet_active::before {
+  background-color: var(--color-primary);
+}
+
+.swiper-pagination_theme_dark {
+  .swiper-bullet::before {
+    background: var(--color-background);
+  }
+
+  .swiper-bullet_active::before {
+    background-color: var(--color-primary);
+  }
+}
+
+.swiper-pagination_bullets-dynamic {
+  .swiper-bullet {
+    visibility: hidden;
+
+    transition: left .3s ease, visibility .3s ease;
+
+    will-change: left;
+  }
+
+  .swiper-bullet::before {
+    transform: scale(.5);
+    transform-origin: 50% 50%;
+    opacity: 0;
+
+    transition: background-color .3s ease, opacity .3s ease, transform .3s ease;
+  }
+
+  .swiper-bullet_active-next-next::before,
+  .swiper-bullet_active-prev-prev::before {
+    transform: scale(.5);
+    opacity: 1;
+  }
+
+  .swiper-bullet_active-prev::before,
+  .swiper-bullet_active-next::before {
+    transform: scale(.75);
+    opacity: 1;
+  }
+
+  .swiper-bullet_active-main::before {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  .swiper-bullet_active-next-next,
+  .swiper-bullet_active-prev-prev,
+  .swiper-bullet_active-prev,
+  .swiper-bullet_active-next,
+  .swiper-bullet_active-main {
+    visibility: visible;
+  }
+}

@@ -1,0 +1,8 @@
+@import 'src/mixins/limiter';
+
+.limiter {
+  @include limiter {
+    max-width: $limiter-width;
+    margin: 0 auto;
+  }
+}

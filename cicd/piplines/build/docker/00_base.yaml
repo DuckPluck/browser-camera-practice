@@ -1,0 +1,17 @@
+build:
+  image: docker-registry.tesonero.com/cr-base-images/docker-builder:20.10.14
+  resource_group: $CI_PROJECT_PATH_SLUG
+  stage: build
+  variables:
+    TAG_COMMIT: $IMAGE_REGISTRY_URL:$IMAGE_VERSION_TAG
+    TAG_LATEST: $IMAGE_REGISTRY_URL:$DEPLOY_ENV-latest
+  script:
+    - docker login -u $REGISTRY_AUTH_USER -p $REGISTRY_AUTH_PASSWORD $REGISTRY_AUTH_URL
+    - if DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect $TAG_COMMIT > /dev/null; then exit 0; fi
+    - docker build --build-arg SOURCE_IMAGE=$SOURCE_IMAGE --build-arg CI_PROJECT_URL=$CI_PROJECT_URL
+      --tag $TAG_COMMIT --tag $TAG_LATEST .
+    - docker push $TAG_COMMIT
+    - docker push $TAG_LATEST
+  after_script:
+    - docker image rm $TAG_COMMIT || exit 0
+    - docker image rm $TAG_LATEST || exit 0

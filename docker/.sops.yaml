@@ -1,0 +1,4 @@
+creation_rules:
+- age: age1dkx8c9fxxg37a5aplgcr4fpqj5xce4ttdfwhg647aqphkn7cd3vs84fj0l
+  path_regex: .*\.env
+  encrypted_regex: .*(TOKEN).*

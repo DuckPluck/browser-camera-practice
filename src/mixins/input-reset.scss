@@ -1,0 +1,36 @@
+@mixin input-reset {
+  display: inline-block;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+
+  line-height: normal;
+  font-family: inherit;
+  vertical-align: middle;
+  text-align: left;
+  color: inherit;
+
+  background: none;
+  border: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+
+  appearance: none;
+
+  .page &:focus {
+    outline: none;
+  }
+
+  &::-webkit-search-cancel-button {
+    display: none;
+  }
+
+  &::-webkit-inner-spin-button {
+    display: none;
+  }
+
+  &::placeholder {
+    color: var(--color-text);
+  }
+}

@@ -1,0 +1,135 @@
+- hosts: target
+  tasks:
+    - name: Set vars
+      ansible.builtin.set_fact:
+        service_compose_release: "docker-compose.{{ x_ci_commit_uid }}.yaml"
+    - name: Show vars
+      ansible.builtin.debug:
+        msg:
+          - "CI commit/release ID: {{ x_ci_commit_uid }}"
+          - "Release compose file: {{ service_compose_release }}"
+          - "App version: {{ app_version }}"
+          - "Docker image: {{ docker_image }}"
+          - "Ingress domain: {{ deploy_ingress_domain }}"
+    - name: Docker registry login
+      community.docker.docker_login:
+        registry_url: "{{ docker_registry_url }}"
+        username: "{{ docker_registry_user }}"
+        password: "{{ docker_registry_password }}"
+        reauthorize: true
+    - name: Create service directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+      loop:
+        - "{{ service_base_path }}"
+        - "{{ service_version_path }}"
+    - name: Check current release
+      ansible.builtin.stat:
+        path: "{{ service_base_path }}/{{ service_compose_current }}"
+      register: old_release
+    - name: Create new release
+      ansible.builtin.file:
+        path: "{{ service_version_path }}/{{ x_ci_commit_uid }}"
+        owner: root
+        group: root
+        mode: '0755'
+        state: directory
+    - name: Setup new release
+      ansible.builtin.template:
+        src: docker-compose.yaml.j2
+        dest: "{{ service_version_path }}/{{ x_ci_commit_uid }}/{{ service_compose_release }}"
+        owner: root
+        group: root
+        mode: '0644'
+        force: yes
+        backup: no
+    - name: Check new release
+      ansible.builtin.stat:
+        path: "{{ service_version_path }}/{{ x_ci_commit_uid }}/{{ service_compose_release }}"
+      register: new_release
+    - name: Create rollback release link
+      ansible.builtin.file:
+        src: "{{ old_release.stat.lnk_source }}"
+        dest: "{{ service_base_path }}/{{ service_compose_rollback }}"
+        owner: root
+        group: root
+        state: link
+      when: old_release.stat.islnk is defined and old_release.stat.lnk_source != new_release.stat.path
+    - name: Create current release link
+      ansible.builtin.file:
+        src: "{{ service_version_path }}/{{ x_ci_commit_uid }}/{{ service_compose_release }}"
+        dest: "{{ service_base_path }}/{{ service_compose_current }}"
+        owner: root
+        group: root
+        state: link
+    - name: Run atomic upgrade
+      block:
+        - name: Deploy service
+          community.docker.docker_compose_v2:
+            project_src: "{{ service_base_path }}"
+            state: present
+            pull: policy
+            recreate: auto
+            remove_orphans: true
+            timeout: 10
+            wait: true
+            wait_timeout: "{{ service_deploy_timeout_seconds }}"
+          register: deployment_status
+        - name: Check deployment status
+          ansible.builtin.assert:
+            that:
+              - deployment_status.failed is defined
+              - deployment_status.failed == false
+        - name: Check ingress reachability
+          ansible.builtin.uri:
+            url: "https://{{ deploy_ingress_domain }}"
+            follow_redirects: safe
+            status_code: 200
+        - name: Set cleanup list
+          ansible.builtin.find:
+            paths: "{{ service_version_path }}"
+            file_type: directory
+            depth: 1
+          register: cleanup_list
+        - name: Cleanup old releases
+          ansible.builtin.file:
+            path: "{{ item.path }}"
+            state: absent
+          when: cleanup_list.files | length > 5
+          loop: "{{ (cleanup_list.files | sort(attribute='ctime'))[:2] }}"
+          loop_control:
+            label: "{{ item.path }}"
+        - name: Prune old images
+          community.docker.docker_prune:
+            images: true
+            images_filters:
+              dangling: false
+      rescue:
+        - name: Delete release link
+          ansible.builtin.file:
+            path: "{{ service_base_path }}/{{ service_compose_current }}"
+            state: absent
+        - name: Rollback release
+          community.docker.docker_compose_v2:
+            project_src: "{{ service_base_path }}"
+            files: "{{ service_compose_rollback }}"
+            state: present
+            pull: policy
+            recreate: always
+            remove_orphans: true
+            timeout: 0
+            wait: true
+            wait_timeout: "{{ service_deploy_timeout_seconds }}"
+          register: rollback_status
+        - name: Upgrade state
+          ansible.builtin.debug:
+            msg:
+              - "Release {{ x_ci_commit_uid }} upgrade failed"
+              - "Rolled back to previous release"
+              - "Rollback deployment status failed: {{ rollback_status.failed }}"
+        - name: Upgrade failed
+          ansible.builtin.fail:

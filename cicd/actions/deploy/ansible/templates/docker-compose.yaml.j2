@@ -1,0 +1,27 @@
+x-logging-conf: &logging-conf
+  driver: "json-file"
+  options:
+    max-file: "5"
+    max-size: "5m"
+
+services:
+  {{ service_name }}:
+    image: {{ docker_image }}
+    logging:
+      <<: *logging-conf
+    environment:
+    - APP_VERSION={{ app_version }}
+    networks:
+      - default
+    entrypoint: ["app.sh"]
+    ports:
+    - 127.0.0.1:3000:3000
+    healthcheck:
+      test: ["CMD", "/bin/sh", "-c", "pidof next-server"]
+      interval: {{ service_healthcheck_interval_seconds }}s
+      timeout: {{ service_healthcheck_timeout_seconds }}s
+      retries: {{ service_healthcheck_retry }}
+    restart: always
+
+networks:
+  default:

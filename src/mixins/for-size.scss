@@ -1,0 +1,36 @@
+$container-width: 1440px;
+
+@mixin for-size($size) {
+  $desktop-smaller-boundary: 1440px;
+  $laptop-l-smaller-boundary: 1366px;
+  $laptop-smaller-boundary: 1280px;
+  $laptop-s-smaller-boundary: 1200px;
+  $tablet-smaller-boundary: 1024px;
+  $phablet-smaller-boundary: 768px - 2px;
+  $mobile-smaller-boundary: 600px - 2px;
+  $mobile-m-smaller-boundary: 412px;
+  $mobile-s-smaller-boundary: 360px;
+  $mobile-xs-smaller-boundary: 320px;
+
+  @if $size == desktop {
+    @media (max-width: #{$desktop-smaller-boundary}) { @content; }
+  } @else if $size == laptop-l {
+    @media (max-width: #{$laptop-l-smaller-boundary}) { @content; }
+  } @else if $size == laptop {
+    @media (max-width: #{$laptop-smaller-boundary}) { @content; }
+  } @else if $size == laptop-s {
+    @media (max-width: #{$laptop-s-smaller-boundary}) { @content; }
+  } @else if $size == tablet {
+    @media (max-width: #{$tablet-smaller-boundary}) { @content; }
+  } @else if $size == phablet {
+    @media (max-width: #{$phablet-smaller-boundary}) { @content; }
+  } @else if $size == mobile {
+    @media (max-width: #{$mobile-smaller-boundary}) { @content; }
+  } @else if $size == mobile-m {
+    @media (max-width: #{$mobile-m-smaller-boundary}) { @content; }
+  } @else if $size == mobile-s {
+    @media (max-width: #{$mobile-s-smaller-boundary}) { @content; }
+  } @else if $size == mobile-xs {
+    @media (max-width: #{$mobile-xs-smaller-boundary}) { @content; }
+  }
+}
