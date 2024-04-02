@@ -32,14 +32,8 @@ jobs:
       - name: Build with Next.js 🏗️
         run: npx next build
 
-      - name: List files
-        run: ls
-
-      - name: Change directory to src
-        run: cd ./src
-
-      - name: List files in src
-        run: ls
+      - name: Find artifact
+        run: find / -name "out"
 
       - name: Upload artifact 📡
         uses: actions/upload-pages-artifact@v3
