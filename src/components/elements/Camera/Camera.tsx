@@ -1,7 +1,7 @@
 'use client';
 
 import classNames from 'classnames';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import './Camera.scss';
 
@@ -73,16 +73,18 @@ export const Camera = ({ className }: Props) => {
     }
   }
 
-  if (videoEl.current) {
-    console.log(4);
-    videoEl.current.addEventListener('play', function() {
-      if (grabFrameButton.current && takePhotoButton.current) {
-        console.log(5);
-        grabFrameButton.current.disabled = false;
-        takePhotoButton.current.disabled = false;
-      }
-    });
-  }
+  useEffect(() => {
+    if (videoEl.current) {
+      console.log(4);
+      videoEl.current.addEventListener('play', function() {
+        if (grabFrameButton.current && takePhotoButton.current) {
+          console.log(5);
+          grabFrameButton.current.disabled = false;
+          takePhotoButton.current.disabled = false;
+        }
+      });
+    }
+  }, [videoEl.current]);
 
   return (
     <div className={blockClassName}>
