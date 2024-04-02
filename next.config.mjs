@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  basePath: "/browser-camera-practice",
+  output: 'export',
   poweredByHeader: false,
 };
 
