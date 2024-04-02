@@ -89,9 +89,8 @@ export const Camera = ({ className }: Props) => {
   return (
     <div className={blockClassName}>
       <div className="camera__column">
-        <video ref={videoEl}>
-          <track kind="captions" />
-        </video>
+        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+        <video ref={videoEl} />
         <button type="button" onClick={onGetUserMediaButtonClick}>open camera preview</button>
       </div>
 
