@@ -39,6 +39,7 @@ export const Camera = ({ className }: Props) => {
       .then((mediaStream) => {
         if (videoEl.current) {
           videoEl.current.srcObject = mediaStream;
+          videoEl.current.play();
           console.log(2, videoEl.current.srcObject);
         }
 
