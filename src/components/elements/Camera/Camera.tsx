@@ -46,6 +46,7 @@ export const Camera = ({ className }: Props) => {
   }
 
   function onGrabFrameButtonClick() {
+    console.log(11);
     imageCapture.grabFrame()
       .then((imageBitmap: ImageBitmap) => {
         console.log(5, imageBitmap);
@@ -58,6 +59,7 @@ export const Camera = ({ className }: Props) => {
   }
 
   function onTakePhotoButtonClick() {
+    console.log(12);
     imageCapture.takePhoto()
       .then((blob: Blob) => {
         console.log(7, blob);
