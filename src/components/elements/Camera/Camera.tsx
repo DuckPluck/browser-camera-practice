@@ -1,7 +1,7 @@
 'use client';
 
 import classNames from 'classnames';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import './Camera.scss';
 
@@ -11,6 +11,8 @@ interface Props {
 
 export const Camera = ({ className }: Props) => {
   const blockClassName = classNames('camera', className);
+
+  const [isButtonsBlocked, setIsButtonsBlocked] = useState(true);
 
   let imageCapture: any;
 
@@ -23,10 +25,7 @@ export const Camera = ({ className }: Props) => {
   useEffect(() => {
     if (videoEl.current) {
       videoEl.current.addEventListener('play', function() {
-        if (grabFrameButton.current && takePhotoButton.current) {
-          grabFrameButton.current.disabled = false;
-          takePhotoButton.current.disabled = false;
-        }
+        setIsButtonsBlocked(false);
       });
     }
   }, []);
@@ -47,15 +46,15 @@ export const Camera = ({ className }: Props) => {
 
   function onGrabFrameButtonClick() {
     console.log(11);
-  //   imageCapture.grabFrame()
-  //     .then((imageBitmap: ImageBitmap) => {
-  //       console.log(5, imageBitmap);
-  //       if (grabFrameCanvas.current) {
-  //         drawCanvas(grabFrameCanvas.current, imageBitmap);
-  //         console.log(6, grabFrameCanvas.current);
-  //       }
-  //     })
-  //     .catch((error: any) => console.error(error));
+    imageCapture.grabFrame()
+      .then((imageBitmap: ImageBitmap) => {
+        console.log(5, imageBitmap);
+        if (grabFrameCanvas.current) {
+          drawCanvas(grabFrameCanvas.current, imageBitmap);
+          console.log(6, grabFrameCanvas.current);
+        }
+      })
+      .catch((error: any) => console.error(error));
   }
 
   function onTakePhotoButtonClick() {
@@ -95,12 +94,12 @@ export const Camera = ({ className }: Props) => {
     <div className={blockClassName}>
       <div className="camera__column">
         <canvas ref={takePhotoCanvas} className="camera__preview" />
-        <button type="button" disabled={true} onClick={onTakePhotoButtonClick} ref={takePhotoButton}>take a photo</button>
+        <button type="button" disabled={isButtonsBlocked} onClick={onTakePhotoButtonClick} ref={takePhotoButton}>take a photo</button>
       </div>
 
       <div className="camera__column">
         <canvas ref={grabFrameCanvas} className="camera__preview"/>
-        <button type="button" disabled={true} onClick={onGrabFrameButtonClick} ref={grabFrameButton}>grab a frame</button>
+        <button type="button" disabled={isButtonsBlocked} onClick={onGrabFrameButtonClick} ref={grabFrameButton}>grab a frame</button>
       </div>
 
       <div className="camera__column">
