@@ -20,6 +20,19 @@ export const Camera = ({ className }: Props) => {
   const takePhotoButton = useRef<HTMLButtonElement>(null);
   const takePhotoCanvas = useRef<HTMLCanvasElement>(null);
 
+  useEffect(() => {
+    if (videoEl.current) {
+      console.log(4);
+      videoEl.current.addEventListener('play', function() {
+        if (grabFrameButton.current && takePhotoButton.current) {
+          console.log(5);
+          grabFrameButton.current.disabled = false;
+          takePhotoButton.current.disabled = false;
+        }
+      });
+    }
+  }, []);
+
   function onGetUserMediaButtonClick() {
     console.log(1, navigator.mediaDevices);
     navigator.mediaDevices.getUserMedia({ video: true })
@@ -73,34 +86,21 @@ export const Camera = ({ className }: Props) => {
     }
   }
 
-  useEffect(() => {
-    if (videoEl.current) {
-      console.log(4);
-      videoEl.current.addEventListener('play', function() {
-        if (grabFrameButton.current && takePhotoButton.current) {
-          console.log(5);
-          grabFrameButton.current.disabled = false;
-          takePhotoButton.current.disabled = false;
-        }
-      });
-    }
-  }, []);
-
   return (
     <div className={blockClassName}>
       <div className="camera__column">
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-        <video ref={videoEl} />
+        <video ref={videoEl} className="camera__preview" />
         <button type="button" onClick={onGetUserMediaButtonClick}>open camera preview</button>
       </div>
 
       <div className="camera__column">
-        <canvas ref={takePhotoCanvas} />
+        <canvas ref={takePhotoCanvas} className="camera__preview" />
         <button type="button" disabled={true} onClick={onTakePhotoButtonClick} ref={takePhotoButton}>take a photo</button>
       </div>
 
       <div className="camera__column">
-        <canvas ref={grabFrameCanvas} />
+        <canvas ref={grabFrameCanvas} className="camera__preview"/>
         <button type="button" disabled={true} onClick={onGrabFrameButtonClick} ref={grabFrameButton}>grab a frame</button>
       </div>
     </div>
