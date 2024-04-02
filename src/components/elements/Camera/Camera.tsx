@@ -47,15 +47,15 @@ export const Camera = ({ className }: Props) => {
 
   function onGrabFrameButtonClick() {
     console.log(11);
-    imageCapture.grabFrame()
-      .then((imageBitmap: ImageBitmap) => {
-        console.log(5, imageBitmap);
-        if (grabFrameCanvas.current) {
-          drawCanvas(grabFrameCanvas.current, imageBitmap);
-          console.log(6, grabFrameCanvas.current);
-        }
-      })
-      .catch((error: any) => console.error(error));
+  //   imageCapture.grabFrame()
+  //     .then((imageBitmap: ImageBitmap) => {
+  //       console.log(5, imageBitmap);
+  //       if (grabFrameCanvas.current) {
+  //         drawCanvas(grabFrameCanvas.current, imageBitmap);
+  //         console.log(6, grabFrameCanvas.current);
+  //       }
+  //     })
+  //     .catch((error: any) => console.error(error));
   }
 
   function onTakePhotoButtonClick() {
