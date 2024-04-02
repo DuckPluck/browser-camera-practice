@@ -21,14 +21,17 @@ export const Camera = ({ className }: Props) => {
   const takePhotoCanvas = useRef<HTMLCanvasElement>(null);
 
   function onGetUserMediaButtonClick() {
+    console.log(1, navigator.mediaDevices);
     navigator.mediaDevices.getUserMedia({ video: true })
       .then((mediaStream) => {
         if (videoEl.current) {
+          console.log(2, videoEl.current);
           videoEl.current.srcObject = mediaStream;
         }
 
         const track = mediaStream.getVideoTracks()[0];
         imageCapture = new ImageCapture(track);
+        console.log(3, imageCapture);
       })
       .catch((error: any) => console.error(error));
   }
@@ -71,8 +74,10 @@ export const Camera = ({ className }: Props) => {
   }
 
   if (videoEl.current) {
+    console.log(4);
     videoEl.current.addEventListener('play', function() {
       if (grabFrameButton.current && takePhotoButton.current) {
+        console.log(5);
         grabFrameButton.current.disabled = false;
         takePhotoButton.current.disabled = false;
       }
