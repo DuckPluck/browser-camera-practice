@@ -35,6 +35,12 @@ jobs:
       - name: List files
         run: ls
 
+      - name: Change directory to src
+        run: cd ./src
+
+      - name: List files in src
+        run: ls
+
       - name: Upload artifact 📡
         uses: actions/upload-pages-artifact@v3
         with:
