@@ -22,10 +22,8 @@ export const Camera = ({ className }: Props) => {
 
   useEffect(() => {
     if (videoEl.current) {
-      console.log(4);
       videoEl.current.addEventListener('play', function() {
         if (grabFrameButton.current && takePhotoButton.current) {
-          console.log(5);
           grabFrameButton.current.disabled = false;
           takePhotoButton.current.disabled = false;
         }
@@ -34,18 +32,15 @@ export const Camera = ({ className }: Props) => {
   }, []);
 
   function onGetUserMediaButtonClick() {
-    console.log(1, navigator.mediaDevices);
     navigator.mediaDevices.getUserMedia({ video: true })
       .then((mediaStream) => {
         if (videoEl.current) {
           videoEl.current.srcObject = mediaStream;
           videoEl.current.play();
-          console.log(2, videoEl.current.srcObject);
         }
 
         const track = mediaStream.getVideoTracks()[0];
         imageCapture = new ImageCapture(track);
-        console.log(3, imageCapture);
       })
       .catch((error: any) => console.error(error));
   }
@@ -53,8 +48,10 @@ export const Camera = ({ className }: Props) => {
   function onGrabFrameButtonClick() {
     imageCapture.grabFrame()
       .then((imageBitmap: ImageBitmap) => {
+        console.log(5, imageBitmap);
         if (grabFrameCanvas.current) {
           drawCanvas(grabFrameCanvas.current, imageBitmap);
+          console.log(6, grabFrameCanvas.current);
         }
       })
       .catch((error: any) => console.error(error));
@@ -62,10 +59,15 @@ export const Camera = ({ className }: Props) => {
 
   function onTakePhotoButtonClick() {
     imageCapture.takePhoto()
-      .then((blob: Blob) => createImageBitmap(blob))
+      .then((blob: Blob) => {
+        console.log(7, blob);
+        return createImageBitmap(blob);
+      })
       .then((imageBitmap: ImageBitmap) => {
+        console.log(8, imageBitmap);
         if (takePhotoCanvas.current) {
           drawCanvas(takePhotoCanvas.current, imageBitmap);
+          console.log(9, takePhotoCanvas.current);
         }
       })
       .catch((error: any) => console.error(error));
